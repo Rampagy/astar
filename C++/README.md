@@ -1,6 +1,4 @@
-# A*
-
-C++ A* implementation.
+# C++ Implementation
 
 ## Building
 
