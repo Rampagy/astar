@@ -2,6 +2,7 @@
 #define MAIN_HPP
 
 #include <iostream>
+#include <chrono>
 
 #include "position.hpp"
 #include "branched_astar.hpp"

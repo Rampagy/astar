@@ -14,10 +14,20 @@ int main ()
         {0,   0, 0, 255, 0},
     };
 
+    auto start_time = chrono::high_resolution_clock::now();
+
     vector<Position> path = astar_search(map, start, goal);
+
+    auto end_time = chrono::high_resolution_clock::now();
+    double duration = chrono::duration_cast<chrono::microseconds>(end_time - start_time).count();
+
+    cout << "Path found in " << duration << " microseconds, path = ";
 
     for (const auto pos : path)
     {
-        cout << pos.to_string() << "\n";
+        cout << pos.to_string() << " ";
     }
+    cout << endl;
+
+
 }

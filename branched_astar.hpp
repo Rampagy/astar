@@ -7,6 +7,7 @@
 #include <vector>
 #include <queue>
 #include <iostream>
+#include <algorithm>    // std::reverse
 #include "position.hpp"
 
 

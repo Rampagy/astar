@@ -30,7 +30,7 @@ struct Position {
         return {{
             Position{x + 0, y - 1}, // north
             Position{x + 1, y + 0}, // east
-            Position{x + 0, y - 1}, // south
+            Position{x + 0, y + 1}, // south
             Position{x - 1, y + 0}  // west
         }};
     }
