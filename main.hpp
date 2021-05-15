@@ -11,6 +11,7 @@
 
 #define MAP_WIDTH 5000
 #define MAP_HEIGHT 5000
+#define SEARCH_ITERATIONS 1000
 
 using namespace std;
 

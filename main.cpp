@@ -48,7 +48,7 @@ int main ()
         double total_time = 0;
         vector<Position> path;
 
-        for (int i = 0; i < 1000; i++)
+        for (int i = 0; i < SEARCH_ITERATIONS; i++)
         {
             chrono::high_resolution_clock::time_point start_time, end_time;
             double duration;
