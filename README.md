@@ -4,7 +4,7 @@ Compare the two versions of the A* algorithm - branchless and branched.  Also ex
 
 ## Installation
 
-    python -m pip install requirements.txt
+    python -m pip install -r requirements.txt
 
 ## Building
 
