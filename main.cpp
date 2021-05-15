@@ -14,12 +14,52 @@ int main ()
         {0,   0, 0, 255, 0},
     };
 
-    auto start_time = chrono::high_resolution_clock::now();
+    // list of function pointers
+    vector<vector<Position> (*)(const vector<vector<int>> &, const Position, const Position)> astar_functions;
+    astar_functions.push_back( branched_astar_search );
+    astar_functions.push_back( optimized_astar_search );
 
-    vector<Position> path = astar_search(map, start, goal);
 
-    auto end_time = chrono::high_resolution_clock::now();
-    double duration = chrono::duration_cast<chrono::microseconds>(end_time - start_time).count();
+    for (const auto astar_algo : astar_functions)
+    {
+        double fastest_time = numeric_limits<double>::infinity();
+        vector<Position> path;
+
+        for (int i = 0; i < 25; i++)
+        {
+            chrono::high_resolution_clock::time_point start_time, end_time;
+            double duration;
+
+            start_time = chrono::high_resolution_clock::now();
+
+            path = (*astar_algo)(map, start, goal);
+
+            end_time = chrono::high_resolution_clock::now();
+            duration = chrono::duration_cast<chrono::microseconds>(end_time - start_time).count();
+
+            if (duration < fastest_time)
+            {
+                fastest_time = duration;
+            }
+        }
+
+        cout << "Path found in " << fastest_time << " microseconds, path = ";
+
+        for (const auto pos : path)
+        {
+            cout << pos.to_string() << " ";
+        }
+        cout << endl;
+    }
+
+    /*
+    // branched A*
+    start_time = chrono::high_resolution_clock::now();
+
+    path = branched_astar_search(map, start, goal);
+
+    end_time = chrono::high_resolution_clock::now();
+    duration = chrono::duration_cast<chrono::microseconds>(end_time - start_time).count();
 
     cout << "Path found in " << duration << " microseconds, path = ";
 
@@ -30,4 +70,19 @@ int main ()
     cout << endl;
 
 
+    // branchless A*
+    start_time = chrono::high_resolution_clock::now();
+
+    path = optimized_astar_search(map, start, goal);
+
+    end_time = chrono::high_resolution_clock::now();
+    duration = chrono::duration_cast<chrono::microseconds>(end_time - start_time).count();
+
+    cout << "Path found in " << duration << " microseconds, path = ";
+
+    for (const auto pos : path)
+    {
+        cout << pos.to_string() << " ";
+    }
+    cout << endl;*/
 }

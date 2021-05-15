@@ -6,6 +6,7 @@
 
 #include "position.hpp"
 #include "branched_astar.hpp"
+#include "optimized_astar.hpp"
 
 using namespace std;
 

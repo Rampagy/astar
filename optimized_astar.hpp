@@ -1,5 +1,5 @@
-#ifndef BRANCHED_ASTAR_HPP
-#define BRANCHED_ASTAR_HPP
+#ifndef OPTIMIZED_ASTAR_HPP
+#define OPTIMIZED_ASTAR_HPP
 
 
 #include <unordered_map>
@@ -8,6 +8,7 @@
 #include <queue>
 #include <iostream>
 #include <algorithm>    // std::reverse
+#include <cmath>
 #include "position.hpp"
 
 
@@ -17,8 +18,8 @@ using namespace std;
 typedef pair<float, Position> score_T;
 
 
-vector<Position> branched_astar_search(  const vector<vector<int>> &weighted_map,
-                                         const Position start, const Position goal );
+vector<Position> optimized_astar_search(  const vector<vector<int>> &weighted_map,
+                                          const Position start, const Position goal );
 
 
 #endif

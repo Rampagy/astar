@@ -1,8 +1,4 @@
-#include "branched_astar.hpp"
-
-
-#define ABS_MACRO(x) (x) < 0 ? (x)*-1 : (x)
-
+#include "optimized_astar.hpp"
 
 /** References:
  *      https://www.geeksforgeeks.org/a-search-algorithm/
@@ -10,14 +6,14 @@
  */
 
 
-float branched_heuristic(Position a, Position b)
+float optimized_heuristic(Position a, Position b)
 {
-    return ABS_MACRO( (a.x - b.x) + (a.y - b.y) );
+    return (float)abs( (a.x - b.x) + (a.y - b.y) );
 }
 
 
-vector<Position> branched_astar_search(  const vector<vector<int>> &weighted_map,
-                                         const Position start, const Position goal )
+vector<Position> optimized_astar_search(  const vector<vector<int>> &weighted_map,
+                                          const Position start, const Position goal )
 {
     int mapWidth = weighted_map.front().size();
     int mapHeight = weighted_map.size();
@@ -29,7 +25,6 @@ vector<Position> branched_astar_search(  const vector<vector<int>> &weighted_map
         return path;
     }
 
-
     unordered_set<Position> close_set;
     unordered_map<Position, Position> came_from;
     unordered_map<Position, float> gscore;
@@ -39,7 +34,7 @@ vector<Position> branched_astar_search(  const vector<vector<int>> &weighted_map
 
     // add initial position to the search list
     gscore[start] = 0;
-    fscore[start] = branched_heuristic(start, goal);
+    fscore[start] = optimized_heuristic(start, goal);
     oheap.push(make_pair(fscore[start], start));
     oheap_copy.insert(start);
 
@@ -110,7 +105,7 @@ vector<Position> branched_astar_search(  const vector<vector<int>> &weighted_map
 
                 // hscore = estimated cost to get from the current position to the goal
                 // fscore = gscore +  hscore
-                fscore[neighbor] = tentative_gscore + branched_heuristic(neighbor, goal);
+                fscore[neighbor] = tentative_gscore + optimized_heuristic(neighbor, goal);
                 oheap.push(make_pair(fscore[neighbor], neighbor));
 
                 // if neighbor is not already in the open list add it
