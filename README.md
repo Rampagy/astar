@@ -8,6 +8,8 @@ Compare the two versions of the A* algorithm - branchless and branched.  Also ex
 
 ## Building
 
+Ensure you either have visual studio (Windows) or g++ (Linux) installed.
+
 To build use the folowing command in the base folder of this project:
 
     scons -j128
