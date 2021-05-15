@@ -1,0 +1,1 @@
+Program('astar_search', Glob('*.cpp'))
