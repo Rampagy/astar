@@ -1,12 +1,8 @@
 #include "main.hpp"
 
 
-
-
 void generate_maze(vector<vector<int>> &maze)
 {
-    cout << "Generating maze..." << endl;
-
     // height
     for (int i = 0; i < MAP_HEIGHT; i++)
     {
@@ -37,12 +33,9 @@ int main ()
 
     // list of function pointers
     vector<vector<Position> (*)(const vector<vector<int>> &, const Position, const Position)> astar_functions;
-    astar_functions.push_back( branched_astar_search );
     astar_functions.push_back( optimized_astar_search );
 
-    cout << "Starting search..." << endl;
-
-    // for each astar algorithm run 25 iterations and report the fastest time
+    // for each astar algorithm multiple iterations and report total time
     for (const auto astar_algo : astar_functions)
     {
         double total_time = 0;
@@ -63,6 +56,6 @@ int main ()
             total_time += duration;
         }
 
-        cout << "Path found in " << total_time/1000/1000 << " seconds" << endl;
+        cout << "C++ path found in " << total_time/1000/1000 << " seconds" << endl;
     }
 }

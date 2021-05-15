@@ -8,3 +8,8 @@ This project uses an SCons build process.  To build the project ensure python ve
 
     python -m pip install -r requirements.txt
 
+## Comparing
+
+To compare the different languages run either `compare_languages_linux.sh` or `compare_languages_windows.bat` depending on your platform.  Don't forget to give execution privileges:
+
+    chmod +x compare_languages_linux.sh
