@@ -3,10 +3,14 @@
 
 #include <iostream>
 #include <chrono>
+#include <stdlib.h>
 
 #include "position.hpp"
 #include "branched_astar.hpp"
 #include "optimized_astar.hpp"
+
+#define MAP_WIDTH 5000
+#define MAP_HEIGHT 5000
 
 using namespace std;
 
