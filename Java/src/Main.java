@@ -1,10 +1,10 @@
-import position.PositionClass;
+import astar.Position;
 
 class Main
 {
     public static void main(String[] args)
     {
-        PositionClass point = new PositionClass(1, 2);
+        Position point = new Position(1, 2);
         System.out.println(String.valueOf(point.x) + ":" + String.valueOf(point.y));
 
 

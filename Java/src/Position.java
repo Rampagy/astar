@@ -1,14 +1,14 @@
-package position;
+package astar;
 
 import java.util.List;
 import java.util.ArrayList;
 
-public class PositionClass
+public class Position
 {
     public int x;
     public int y;
 
-    public PositionClass(int newX, int newY)
+    public Position(int newX, int newY)
     {
         x = newX;
         y = newY;
