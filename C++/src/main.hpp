@@ -8,9 +8,9 @@
 #include "position.hpp"
 #include "optimized_astar.hpp"
 
-#define MAP_WIDTH 5000
-#define MAP_HEIGHT 5000
-#define SEARCH_ITERATIONS 2000
+#define MAP_WIDTH 500
+#define MAP_HEIGHT 500
+#define SEARCH_ITERATIONS 100
 
 using namespace std;
 

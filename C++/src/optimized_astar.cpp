@@ -30,6 +30,7 @@ vector<Position> optimized_astar_search(  const vector<vector<int>> &weighted_ma
     unordered_map<Position, float> gscore;
     unordered_map<Position, float> fscore;
     priority_queue<score_T, vector<score_T>, greater<score_T>> oheap;
+    unordered_set<Position> oheap_copy;
 
     Position current;
     array<Position, 4> neighbors;
@@ -41,12 +42,13 @@ vector<Position> optimized_astar_search(  const vector<vector<int>> &weighted_ma
     gscore[start] = 0;
     fscore[start] = optimized_heuristic(start, goal);
     oheap.emplace(fscore[start], start);
-
+    oheap_copy.insert(start);
 
     while ( !oheap.empty() )
     {
         current = oheap.top().second;
         oheap.pop();
+        oheap_copy.erase(current);
 
         if (current == goal)
         {
@@ -74,7 +76,7 @@ vector<Position> optimized_astar_search(  const vector<vector<int>> &weighted_ma
                 neighbor.y < mapHeight && neighbor.x < mapWidth &&
                 weighted_map[neighbor.y][neighbor.x] < 255)
             {
-                tentative_gscore = gscore[current];
+                tentative_gscore = gscore[current] + (float)weighted_map[neighbor.y][neighbor.x];
                 neighbor_iter = gscore.find(neighbor);
 
                 if (neighbor_iter == gscore.end())
@@ -86,20 +88,31 @@ vector<Position> optimized_astar_search(  const vector<vector<int>> &weighted_ma
                     current_gscore = neighbor_iter->second;
                 }
 
-                // if the neighbor is not in the closed set or
-                // it's gscore is better than the current
-                if ((close_set.find(neighbor) == close_set.end()) ||
-                    (tentative_gscore < current_gscore))
+                if ((tentative_gscore >= current_gscore) &&
+                    (close_set.find(neighbor) != close_set.end()))
                 {
+                    continue;
+                }
+
+                if ((tentative_gscore < current_gscore) ||
+                    (oheap_copy.find(neighbor) == oheap_copy.end()))
+                {
+                    // track the node's parent
                     came_from[neighbor] = current;
 
                     // gscore = cost to get from start to the current position
-                    gscore[neighbor] = tentative_gscore;
-
                     // hscore = estimated cost to get from the current position to the goal
                     // fscore = gscore +  hscore
+                    gscore[neighbor] = tentative_gscore;
                     fscore[neighbor] = tentative_gscore + optimized_heuristic(neighbor, goal);
+
+                    // Add to the open list
                     oheap.emplace(fscore[neighbor], neighbor);
+                    if (oheap_copy.find(neighbor) == oheap_copy.end())
+                    {
+                        // don't add twice (keys must be unique)
+                        oheap_copy.insert(neighbor);
+                    }
                 }
             }
         }
