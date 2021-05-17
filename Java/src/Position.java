@@ -1,28 +1,38 @@
 package astar;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
-public class Position
-{
-    public int x;
-    public int y;
+public class Position {
 
-    public Position(int newX, int newY)
-    {
-        x = newX;
-        y = newY;
-    }
+	int x;
+	int y;
 
-    /*
-    public List<Position> get_surrounding_positions()
-    {
-        List<Position> neighbors = new ArrayList<Position>();
-        neighbors.add( new Position(x + 0, y - 1) ); // north
-        neighbors.add( new Position(x + 1, y + 0) ); // east
-        neighbors.add( new Position(x + 0, y + 1) ); // south
-        neighbors.add( new Position(x - 1, y + 0) ); // west
+	Position(int first, int second)
+	{
+		x = first;
+		y = second;
+	}
 
-        return neighbors;
-    }*/
+	boolean CompareEqual(Position compareTo)
+	{
+		if (this.x == compareTo.x)
+		{
+			if(this.y == compareTo.y)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public List<Position> GetSurroundingPositions()
+	{
+		List<Position> neighbors = new ArrayList<Position>();
+		neighbors.add(new Position(x + 0, y - 1)); // north
+		neighbors.add(new Position(x + 1, y + 0)); // east
+		neighbors.add(new Position(x + 0, y + 1)); // south
+		neighbors.add(new Position(x - 1, y + 0)); // west
+		return neighbors;
+	}
 }

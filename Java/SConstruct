@@ -3,5 +3,6 @@ Java(target='build', source='src')
 
 # build .jar
 build_files = Glob('build/*.class')
+build_files = Glob('build/astar/*.class')
 build_files += Glob('src/*.mf')
 Jar(target='astar_search', source=build_files)
