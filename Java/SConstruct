@@ -1,12 +1,7 @@
-import os
-
-env = Environment(ENV = os.environ)
-
 # build .class files
 Java(target='build', source='src')
 
 # build .jar
 build_files = Glob('build/*.class')
 build_files += Glob('src/*.mf')
-print(build_files)
 Jar(target='astar_search', source=build_files)
