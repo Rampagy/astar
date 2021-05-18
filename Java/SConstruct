@@ -1,8 +1,16 @@
+# References:
+# https://www.oracle.com/java/technologies/javase/vmoptions-jsp.html#PerformanceTuning
+# https://docs.oracle.com/javase/7/docs/technotes/tools/windows/javac.html#options
+# https://scons.org/doc/1.2.0/HTML/scons-user/a4774.html
+
+# set environment
+env=Environment(JAVACFLAGS=['-J-XX:+AggressiveHeap', '-J-XX:+AggressiveOpts'])
+
 # build .class files
-Java(target='build', source='src')
+env.Java(target='build', source='src')
 
 # build .jar
 build_files = Glob('build/*.class')
-build_files = Glob('build/astar/*.class')
+build_files += Glob('build/astar/*.class')
 build_files += Glob('src/*.mf')
-Jar(target='astar_search', source=build_files)
+env.Jar(target='astar_search', source=build_files)
