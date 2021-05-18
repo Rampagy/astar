@@ -1,38 +1,41 @@
 package astar;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Position {
+    public final int x;
+    public final int y;
 
-    int x;
-    int y;
-
-    Position(int first, int second)
-    {
-        x = first;
-        y = second;
+    public Position(final int x, final int y) {
+        this.x = x;
+        this.y = y;
     }
 
-    boolean CompareEqual(Position compareTo)
+    public ArrayList<Position> GetSurroundingPositions()
     {
-        if (this.x == compareTo.x)
-        {
-            if(this.y == compareTo.y)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public List<Position> GetSurroundingPositions()
-    {
-        List<Position> neighbors = new ArrayList<Position>();
+        final ArrayList<Position> neighbors = new ArrayList<Position>();
         neighbors.add(new Position(x + 0, y - 1)); // north
         neighbors.add(new Position(x + 1, y + 0)); // east
         neighbors.add(new Position(x + 0, y + 1)); // south
         neighbors.add(new Position(x - 1, y + 0)); // west
         return neighbors;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Position position = (Position) o;
+
+        if (x != position.x) return false;
+        return y == position.y;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = x;
+        result = 31 * result + y;
+        return result;
     }
 }
