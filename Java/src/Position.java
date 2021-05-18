@@ -34,8 +34,7 @@ public class Position {
 
     @Override
     public int hashCode() {
-        int result = x;
-        result = 31 * result + y;
+        int result = ((x+y) * (x+y+1) / 2) + y;
         return result;
     }
 }
