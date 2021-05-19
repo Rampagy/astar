@@ -36,6 +36,7 @@ public class Main {
     {
         Position start = new Position(0, 0);
         Position goal = new Position(MAP_WIDTH - 1, MAP_HEIGHT - 1);
+        ArrayList<Position> path = new ArrayList<Position>();
 
         // generate the maze
         GenerateMaze();
@@ -45,17 +46,22 @@ public class Main {
         maze.get(goal.y).set(goal.x, 0);
 
         // loop through maze multiple times and report total time
-        for (int ii  = 0; ii < SEARCH_ITERATIONS; ii++)
+        for (int i  = 0; i < SEARCH_ITERATIONS; i++)
         {
             long start_time, end_time;
 
             start_time = System.nanoTime();
 
-            OptimizedAStarSearch(maze, start, goal);
+            path = OptimizedAStarSearch(maze, start, goal);
 
             end_time = System.nanoTime();
 
+            // track total execution time
             total_time += end_time - start_time;
+
+            // generate new maze
+            maze.clear();
+            GenerateMaze();
         }
 
         System.out.println("Java path found in " + total_time/1000/1000/1000 + " seconds");
@@ -100,7 +106,7 @@ public class Main {
             oheap_copy.remove(current);
             //System.out.print(oheap.size()+":");
 
-            if (current == goal)
+            if (current.equals(goal))
             {
                 //path found!
                 while (came_from.get(current) != null)

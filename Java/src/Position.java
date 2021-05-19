@@ -11,6 +11,11 @@ public class Position {
         this.y = y;
     }
 
+    public String to_string()
+    {
+        return x + ":" + y;
+    }
+
     public ArrayList<Position> GetSurroundingPositions()
     {
         final ArrayList<Position> neighbors = new ArrayList<Position>();
