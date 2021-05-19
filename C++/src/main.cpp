@@ -1,5 +1,6 @@
 #include "main.hpp"
 
+using namespace std;
 
 void generate_maze(vector<vector<int>> &maze)
 {
@@ -54,6 +55,11 @@ int main ()
             duration = chrono::duration_cast<chrono::microseconds>(end_time - start_time).count();
 
             total_time += duration;
+
+            // generate new maze every time
+            maze.clear();
+            generate_maze(maze);
+
         }
 
         cout << "C++ path found in " << total_time/1000/1000 << " seconds" << endl;

@@ -12,6 +12,4 @@
 #define MAP_HEIGHT 500
 #define SEARCH_ITERATIONS 100
 
-using namespace std;
-
 #endif
