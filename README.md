@@ -20,6 +20,6 @@ To compare the different languages run either `compare_languages_linux.sh` or `c
 
 | Language | Linux | Windows |
 |    :-:   |  :-:  |   :-:   |
-|    C++   |  18.9 |   21.6  |
+|    C++   |  18.9 |   20.8  |
 |    TBD   |       |         |
-|   Java   |  12.9 |   73.1  |
+|   Java   |  12.9 |   13.9  |
