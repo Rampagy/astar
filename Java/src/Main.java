@@ -104,7 +104,6 @@ public class Main {
             // poll retrieves and removes
             current = oheap.poll().position;
             oheap_copy.remove(current);
-            //System.out.print(oheap.size()+":");
 
             if (current.equals(goal))
             {
@@ -133,14 +132,15 @@ public class Main {
                     weightedMap.get(neighbor.y).get(neighbor.x) < 255)
                 {
                     tentative_gscore = gscore.get(current) +  (float)weightedMap.get(neighbor.y).get(neighbor.x);
+                    Object neighbor_gscore = gscore.get(neighbor);
 
-                    if (gscore.get(neighbor) == null)
+                    if (neighbor_gscore == null)
                     {
                         current_gscore = 0;
                     }
                     else
                     {
-                        current_gscore = gscore.get(neighbor);
+                        current_gscore = (float)neighbor_gscore;
                     }
 
                     if ((tentative_gscore >= current_gscore) &&
