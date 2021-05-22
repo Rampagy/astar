@@ -50,9 +50,9 @@ def astar_search(weighted_map, start, goal):
 
                 tentative_gscore = gscore[current] + weighted_map[neighbor.y][neighbor.x]
 
-                current_gscore = 0
-                if neighbor in gscore:
-                    current_gscore = gscore[neighbor]
+                current_gscore = gscore.get(neighbor)
+                if current_gscore == None:
+                    current_gscore = 0
 
                 if (tentative_gscore >= current_gscore and
                         neighbor in close_set):
@@ -71,9 +71,6 @@ def astar_search(weighted_map, start, goal):
                     fscore[neighbor] = tentative_gscore + heuristic(neighbor, goal)
 
                     # add to the open list
-                    if (fscore[neighbor], neighbor) in oheap:
-                        print('WHOOAAAA HOOLD UPP')
-
                     heapq.heappush(oheap, (fscore[neighbor], neighbor))
                     if neighbor not in oheap_copy:
                         oheap_copy.add(neighbor)
