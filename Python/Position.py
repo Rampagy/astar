@@ -24,4 +24,5 @@ class Position:
                                    self.y)
 
     def __hash__(self):
-        return ((self.x+self.y) * (self.x+self.y+1) >> 1) + self.y
+        #return ((self.x+self.y) * (self.x+self.y+1) >> 1) + self.y # cantors pairing
+        return self.x * self.x + self.x + self.y if self.x >= self.y else self.x + self.y * self.y # szudziks function
