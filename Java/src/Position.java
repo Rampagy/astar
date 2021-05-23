@@ -39,7 +39,7 @@ public class Position {
 
     @Override
     public int hashCode() {
-        int result = ((x+y) * (x+y+1) / 2) + y;
-        return result;
+        //return ((x+y) * (x+y+1) / 2) + y; // cantors pairing
+        return (x >= y) ? x * x + x + y : x + y * y; // szudziks function
     }
 }

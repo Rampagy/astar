@@ -40,7 +40,8 @@ namespace std {
     template <>
     struct hash<Position> {
         std::size_t operator()(const Position& position) const {
-            return ((position.x+position.y) * (position.x+position.y+1) / 2) + position.y;
+            //return ((position.x+position.y) * (position.x+position.y+1) / 2) + position.y; // cantors pairing
+            return (position.x >= position.y) ? position.x * position.x + position.x + position.y : position.x + position.y * position.y; // szudziks function
         }
     };
 }
