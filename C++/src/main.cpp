@@ -4,6 +4,7 @@ using namespace std;
 
 void generate_maze(vector<vector<int>> &maze)
 {
+    #if !defined(TEST_ASTAR)
     // height
     for (int i = 0; i < MAP_HEIGHT; i++)
     {
@@ -11,22 +12,31 @@ void generate_maze(vector<vector<int>> &maze)
         // width
         for (int j = 0; j < MAP_WIDTH; j++)
         {
-            maze_row.push_back(rand() % 256);
+            maze_row.push_back(rand() % 255);
         }
 
         maze.push_back(maze_row);
     }
+    #else // defined(TEST_ASTAR)
+    maze = {
+        {  1,   1,   1,   1,   1},
+        {  1,   0,   1,   1,   1},
+        {  1,   0,   0, 255,   1},
+        {  1, 255, 255, 255,   1},
+        {  1,   1,   1,   1,   1},
+    };
+
+    #endif
 }
 
 
 int main ()
 {
-    Position start = Position(0, 0);
-    Position goal = Position(MAP_WIDTH-1, MAP_HEIGHT-1);
     vector<vector<int>> maze;
-
-    // generate the maze
     generate_maze(maze);
+
+    Position start = Position(0, 0);
+    Position goal = Position(maze.front().size()-1, maze.size()-1);
 
     // make sure start and end are walkable
     maze[start.y][start.x] = 0;
@@ -44,6 +54,10 @@ int main ()
 
         for (int i = 0; i < SEARCH_ITERATIONS; i++)
         {
+            #ifdef TEST_ASTAR
+            cout << i << endl;
+            #endif
+
             chrono::high_resolution_clock::time_point start_time, end_time;
             double duration;
 
@@ -55,6 +69,14 @@ int main ()
             duration = chrono::duration_cast<chrono::microseconds>(end_time - start_time).count();
 
             total_time += duration;
+
+            #ifdef TEST_ASTAR
+            for (Position p : path)
+            {
+                cout << p.x << ":" << p.y << " ";
+            }
+            cout << endl << endl;
+            #endif
 
             // generate new maze every time
             maze.clear();

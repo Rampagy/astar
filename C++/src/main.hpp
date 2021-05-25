@@ -8,8 +8,19 @@
 #include "position.hpp"
 #include "optimized_astar.hpp"
 
-#define MAP_WIDTH 500
-#define MAP_HEIGHT 500
-#define SEARCH_ITERATIONS 100
+//#define TEST_ASTAR
+
+
+
+#ifdef TEST_ASTAR
+    // override the above search iterations if testing
+    // the astar algorithm
+    #define SEARCH_ITERATIONS 1
+#else // !defined(TEST_ASTAR)
+    #define MAP_WIDTH 500
+    #define MAP_HEIGHT 500
+    #define SEARCH_ITERATIONS 100
+#endif // TEST_ASTAR
+
 
 #endif

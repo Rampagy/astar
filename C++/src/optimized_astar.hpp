@@ -7,7 +7,7 @@
 #include <vector>
 #include <queue>
 #include <iostream>
-#include <algorithm>    // std::reverse
+#include <algorithm>
 #include <cmath>
 #include "position.hpp"
 
