@@ -25,7 +25,7 @@ public class Main {
             //width
             for (int j = 0; j < MAP_WIDTH; j++)
             {
-                maze_row.add(Math.abs(random.nextInt()) % 256);
+                maze_row.add(Math.abs(random.nextInt()) % 255);
             }
             maze.add(maze_row);
         }
@@ -52,7 +52,7 @@ public class Main {
 
             start_time = System.nanoTime();
 
-            path = OptimizedAStarSearch(maze, start, goal);
+            path = AStarSearch(maze, start, goal);
 
             end_time = System.nanoTime();
 
@@ -68,7 +68,7 @@ public class Main {
     }
 
 
-    static ArrayList<Position> OptimizedAStarSearch( final ArrayList<ArrayList<Integer>> weightedMap,
+    static ArrayList<Position> AStarSearch( final ArrayList<ArrayList<Integer>> weightedMap,
                                                      final Position start, final Position goal)
     {
         int mapWidth = weightedMap.get(0).size();
@@ -86,18 +86,16 @@ public class Main {
         HashMap<Position, Float> gscore = new HashMap<>();
         HashMap<Position, Float> fscore = new HashMap<>();
         PriorityQueue<Pair> oheap = new PriorityQueue<>();
-        HashSet<Position> oheap_copy = new HashSet<>();
+        HashMap<Position, Float> oheap_copy = new HashMap<>();
 
         Position current;
         ArrayList<Position> neighbors = new ArrayList<Position>();
-        float tentative_gscore;
-        float current_gscore;
 
         // add initial position to the search list
         gscore.put(start, (float)0);
-        fscore.put(start, OptimizedHeuristic(start, goal));
+        fscore.put(start, Heuristic(start, goal));
         oheap.add(new Pair(fscore.get(start), start));
-        oheap_copy.add(start);
+        oheap_copy.put(start, fscore.get(start));
 
         while ( !oheap.isEmpty() )
         {
@@ -119,8 +117,6 @@ public class Main {
                 return path;
             }
 
-            // add current position to the already searched list
-            close_set.add(current);
             neighbors = current.GetSurroundingPositions();
 
             // search surrounding neighbors
@@ -131,26 +127,29 @@ public class Main {
                     neighbor.y < mapHeight && neighbor.x < mapWidth &&
                     weightedMap.get(neighbor.y).get(neighbor.x) < 255)
                 {
-                    tentative_gscore = gscore.get(current) +  (float)weightedMap.get(neighbor.y).get(neighbor.x);
-                    Object neighbor_gscore = gscore.get(neighbor);
+                    float neighbor_gscore = gscore.get(current) + (float)weightedMap.get(neighbor.y).get(neighbor.x) +
+                                    Heuristic(neighbor, current);
+                    float neighbor_fscore = neighbor_gscore + Heuristic(neighbor, goal);
 
-                    if (neighbor_gscore == null)
+                    // if this neighbor is already on the open list with a smaller fscore, skip it
+                    Object open_object = oheap_copy.get(neighbor);
+                    if (open_object != null)
                     {
-                        current_gscore = 0;
+                        if ((float)open_object <= neighbor_fscore)
+                        {
+                            continue;
+                        }
                     }
+                    // check if it is on the closed list
+                    else if (close_set.contains(neighbor))
+                    {
+                        if (fscore.get(neighbor) <= neighbor_fscore)
+                        {
+                            continue;
+                        }
+                    }
+                    // add to the open list
                     else
-                    {
-                        current_gscore = (float)neighbor_gscore;
-                    }
-
-                    if ((tentative_gscore >= current_gscore) &&
-                        (close_set.contains(neighbor)))
-                    {
-                        continue;
-                    }
-
-                    if ((tentative_gscore < current_gscore) ||
-                        (!oheap_copy.contains(neighbor)))
                     {
                         //track the node's parent
                         came_from.put(neighbor, current);
@@ -158,26 +157,25 @@ public class Main {
                         // gscore = cost to get from start to the current position
                         // hscore = estimated cost to get from the current position to the goal
                         // fscore = gscore +  hscore
-                        gscore.put(neighbor, tentative_gscore);
-                        fscore.put(neighbor, tentative_gscore + OptimizedHeuristic(neighbor, goal));
+                        gscore.put(neighbor, neighbor_gscore);
+                        fscore.put(neighbor, neighbor_fscore);
 
                         // Add to the open list
+                        oheap_copy.put(neighbor, fscore.get(neighbor));
                         oheap.add(new Pair(fscore.get(neighbor), neighbor));
-                        if ( !oheap_copy.contains(neighbor) )
-                        {
-                            // don't add twice (keys must be unique)
-                            oheap_copy.add(neighbor);
-                        }
                     }
                 }
             }
+
+            // add current position to the already searched list
+            close_set.add(current);
         }
 
         return path;
     }
 
 
-    static float OptimizedHeuristic(Position a, Position b)
+    static float Heuristic(final Position a, final Position b)
     {
         return (float)Math.abs( (a.x - b.x) + (a.y - b.y));
     }
