@@ -51,11 +51,10 @@ vector<Position> optimized_astar_search(  const vector<vector<int>> &weighted_ma
 
     while ( !oheap.empty() )
     {
-        pop_heap(oheap.begin(), oheap.end());
+        pop_heap(oheap.begin(), oheap.end(), greater_comp);
         oheap.pop_back();
         current = oheap.front().second;
         oheap_copy.erase(current);
-
 
         if (current == goal)
         {
