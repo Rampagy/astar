@@ -18,17 +18,14 @@ def astar_search(weighted_map, start, goal):
     came_from = dict()
     gscore = {start: 0}
     fscore = {start : heuristic(start, goal)}
-    oheap_copy = { start }
+    oheap_copy = { start : fscore[start] }
     oheap = []
     heapq.heappush(oheap, (fscore[start], start))
 
 
     while ( len(oheap) > 0 ):
         current = heapq.heappop(oheap)[1]
-        try:
-            oheap_copy.remove(current)
-        except:
-            pass
+        oheap_copy.pop(current)
 
         if current == goal:
             # path found!
@@ -39,40 +36,44 @@ def astar_search(weighted_map, start, goal):
             path.reverse()
             return path
 
-        # add current position to the already searched list
-        close_set.add(current)
         neighbors = current.get_surrounding_positions()
 
         for neighbor in neighbors:
+
+            # if the neighbor is a vlid position
             if (neighbor.x >= 0 and neighbor.y >= 0 and
                     neighbor.y < mapHeight and neighbor.x < mapWidth and
                     weighted_map[neighbor.y][neighbor.x] < 255):
 
-                tentative_gscore = gscore[current] + weighted_map[neighbor.y][neighbor.x]
+                neighbor_gscore = gscore[current] + weighted_map[neighbor.y][neighbor.x] + \
+                                    heuristic(neighbor, current)
+                neighbor_fscore = neighbor_gscore + heuristic(neighbor, goal)
 
-                current_gscore = gscore.get(neighbor)
-                if current_gscore == None:
-                    current_gscore = 0
-
-                if (tentative_gscore >= current_gscore and
-                        neighbor in close_set):
-                    continue
-
-                if (tentative_gscore < current_gscore or
-                        neighbor not in oheap_copy):
-
+                # if this neighbor is already on the open list with a smaller fscore, skip it
+                open_neighbor = oheap_copy.get(neighbor)
+                if (open_neighbor != None):
+                    if open_neighbor <= neighbor_fscore:
+                        continue
+                # check if it is on the closed list
+                elif neighbor in close_set:
+                    if fscore.get(neighbor) <= neighbor_fscore:
+                        continue
+                # add to the open list
+                else:
                     # track the node's parent
                     came_from[neighbor] = current
 
                     # gscore = cost to get from start to the curernt position
                     # hscore = estimated cost to get from the current position to the goal
                     # fscore = gscore + hscore
-                    gscore[neighbor] = tentative_gscore
-                    fscore[neighbor] = tentative_gscore + heuristic(neighbor, goal)
+                    gscore[neighbor] = neighbor_gscore
+                    fscore[neighbor] = neighbor_fscore
 
                     # add to the open list
                     heapq.heappush(oheap, (fscore[neighbor], neighbor))
-                    if neighbor not in oheap_copy:
-                        oheap_copy.add(neighbor)
+                    oheap_copy[neighbor] = fscore[neighbor]
+
+        # add current position to the already searched list
+        close_set.add(current)
 
     return path
