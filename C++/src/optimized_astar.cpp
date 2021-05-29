@@ -42,6 +42,14 @@ vector<Position> optimized_astar_search(  const vector<vector<int>> &weighted_ma
     std::unordered_map<Position, float>::iterator neighbor_iter;
     std::unordered_map<Position, float>::iterator open_iter;
 
+    // Memory preallocation
+    oheap.reserve(mapWidth + mapHeight);
+    oheap_copy.reserve((mapWidth * mapHeight) >> 2);
+    close_set.reserve((mapWidth * mapHeight) >> 2);
+    came_from.reserve((mapWidth * mapHeight) >> 2);
+    gscore.reserve((mapWidth * mapHeight) >> 2);
+    fscore.reserve((mapWidth * mapHeight) >> 2);
+
     // add initial position to the search list
     gscore[start] = 0;
     fscore[start] = optimized_heuristic(start, goal);
