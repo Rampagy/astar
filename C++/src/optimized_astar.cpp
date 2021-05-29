@@ -34,7 +34,7 @@ vector<Position> optimized_astar_search(  const vector<vector<int>> &weighted_ma
     unordered_map<Position, Position> came_from;
     unordered_map<Position, float> gscore;
     unordered_map<Position, float> fscore;
-    deque<score_T> oheap;
+    vector<score_T> oheap;
     unordered_map<Position, float> oheap_copy;
 
     Position current;
