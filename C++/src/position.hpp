@@ -42,6 +42,8 @@ namespace std {
         std::size_t operator()(const Position& position) const {
             //return ((position.x+position.y) * (position.x+position.y+1) / 2) + position.y; // cantors pairing
             return (position.x >= position.y) ? position.x * position.x + position.x + position.y : position.x + position.y * position.y; // szudziks function
+            //int max_val = max(position.x, position.y); // rosenberg-strong function
+            //return max_val*max_val + max_val + position.x - position.y; // rosenberg-strong function
         }
     };
 }
