@@ -49,6 +49,7 @@ vector<Position> optimized_astar_search(  const vector<vector<int>> &weighted_ma
     came_from.reserve((mapWidth * mapHeight) >> 2);
     gscore.reserve((mapWidth * mapHeight) >> 2);
     fscore.reserve((mapWidth * mapHeight) >> 2);
+    path.reserve((mapWidth + mapHeight) << 2);
 
     // add initial position to the search list
     gscore[start] = 0;

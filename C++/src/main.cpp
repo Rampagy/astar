@@ -4,11 +4,13 @@ using namespace std;
 
 void generate_maze(vector<vector<int>> &maze)
 {
+    maze.reserve(MAP_HEIGHT);
     #if !defined(TEST_ASTAR)
     // height
     for (int i = 0; i < MAP_HEIGHT; i++)
     {
         vector<int> maze_row;
+        maze_row.reserve(MAP_WIDTH);
         // width
         for (int j = 0; j < MAP_WIDTH; j++)
         {
