@@ -123,8 +123,8 @@ vector<Position> optimized_astar_search(  const vector<vector<int>> &weighted_ma
                     fscore[neighbor] = neighbor_fscore;
 
                     // Add to the open list
-                    oheap_copy.emplace(neighbor, fscore[neighbor]);
-                    oheap.emplace_back(fscore[neighbor], neighbor);
+                    oheap_copy.emplace(neighbor, neighbor_fscore);
+                    oheap.emplace_back(neighbor_fscore, neighbor);
                     push_heap(oheap.begin(), oheap.end(), greater_comp);
                 }
             }
