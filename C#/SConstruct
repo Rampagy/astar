@@ -1,0 +1,19 @@
+import SCons.Node.FS
+
+csc = 'csc'
+csc_flags = ['-optimize']
+target_dest = 'builds/astar_search'
+
+# create an action for compiling the code
+bld = Builder(  action = '$CSC $CSCFLAGS -out:${TARGET.abspath} $SOURCES',
+                source_factory=SCons.Node.FS.default_fs.Entry,
+                suffix='.exe')
+
+# create an environment for compiling the code
+env = Environment(CSC=csc, CSCFLAGS=csc_flags)
+
+# link the environment and the action/builder
+env.Append(BUILDERS = {'csharp_build' : bld})
+
+# Build the executable
+env.csharp_build(target_dest, Glob('src/*.cs'))
