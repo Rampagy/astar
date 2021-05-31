@@ -81,12 +81,12 @@ public class Main {
             return path;
         }
 
-        HashSet<Position> close_set = new HashSet<>();
-        HashMap<Position, Position> came_from = new HashMap<>();
-        HashMap<Position, Float> gscore = new HashMap<>();
-        HashMap<Position, Float> fscore = new HashMap<>();
-        PriorityQueue<Pair> oheap = new PriorityQueue<>();
-        HashMap<Position, Float> oheap_copy = new HashMap<>();
+        HashSet<Position> close_set = new HashSet<Position>((mapWidth * mapHeight) >> 2);
+        HashMap<Position, Position> came_from = new HashMap<Position, Position>((mapWidth * mapHeight) >> 2);
+        HashMap<Position, Float> gscore = new HashMap<Position, Float>((mapWidth * mapHeight) >> 2);
+        HashMap<Position, Float> fscore = new HashMap<Position, Float>((mapWidth * mapHeight) >> 2);
+        PriorityQueue<Pair> oheap = new PriorityQueue<Pair>(mapWidth * mapHeight + 1);
+        HashMap<Position, Float> oheap_copy = new HashMap<Position, Float>((mapWidth * mapHeight) >> 2);
 
         Position current;
         ArrayList<Position> neighbors = new ArrayList<Position>();
