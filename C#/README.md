@@ -2,7 +2,7 @@
 
 ## Building
 
-[Download and install](https://www.mono-project.com/download/stable/) the Mono compiler for your system.  This porject was built and verified using version 6.12.0 Stable (6.12.0.122).
+[Download and install](https://www.mono-project.com/download/stable/) the Mono compiler for your system.  This project was built and verified using version 6.12.0 Stable (6.12.0.122).
 
 To build use the folowing command in the base folder of this project:
 
