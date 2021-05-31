@@ -11,3 +11,13 @@ To build use the folowing command in the base folder of this project:
 To clean the build files use the following command:
 
     scons -c
+
+## Running
+
+When running the C++ executable ensure that you add executable permissions:
+
+    chmod +x build/astar_search_Linux
+
+Then to run the executable:
+
+    ./builds/astar_search_Linux
