@@ -132,10 +132,10 @@ public class Main {
                     float neighbor_fscore = neighbor_gscore + Heuristic(neighbor, goal);
 
                     // if this neighbor is already on the open list with a smaller fscore, skip it
-                    Object open_object = oheap_copy.get(neighbor);
-                    if (open_object != null)
+                    Object existing_neighbor_fscore = oheap_copy.get(neighbor);
+                    if (existing_neighbor_fscore != null)
                     {
-                        if ((float)open_object <= neighbor_fscore)
+                        if ((float)existing_neighbor_fscore <= neighbor_fscore)
                         {
                             continue;
                         }
@@ -155,14 +155,14 @@ public class Main {
                         came_from.put(neighbor, current);
 
                         // gscore = cost to get from start to the current position
-                        // hscore = estimated cost to get from the current position to the goal
+                        // hscore = estimated cost to get from the current position to the goal (heuristic)
                         // fscore = gscore +  hscore
                         gscore.put(neighbor, neighbor_gscore);
                         fscore.put(neighbor, neighbor_fscore);
 
                         // Add to the open list
-                        oheap_copy.put(neighbor, fscore.get(neighbor));
-                        oheap.add(new Pair(fscore.get(neighbor), neighbor));
+                        oheap_copy.put(neighbor, neighbor_fscore);
+                        oheap.add(new Pair(neighbor_fscore, neighbor));
                     }
                 }
             }

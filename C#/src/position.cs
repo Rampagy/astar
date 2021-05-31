@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Priority_Queue;
 
 
 namespace astar
@@ -8,7 +9,7 @@ namespace astar
     /// <summary>
     /// A position is an object with x and y values indicating the absolute position on the map.
     /// </summary>
-    public class Position
+    public class Position : FastPriorityQueueNode
     {
         public readonly int x;
         public readonly int y;
@@ -22,7 +23,7 @@ namespace astar
         /// <summary>
         /// Returns a list of all positions around the given position in each cardinal direction
         /// </summary>
-        public List<Position> GetSurroundingCardinals()
+        public List<Position> GetSurroundingPositions()
         {
             List<Position> neighbors = new List<Position>();
             neighbors.Add(new Position(this.x + 0, this.y - 1)); // north

@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
+using Priority_Queue;
 
 namespace astar
 {
@@ -37,6 +38,10 @@ namespace astar
 
                 stopwatch.Stop();
                 total_time += stopwatch.Elapsed.TotalSeconds;
+
+                // regenerate the map
+                maze.Clear();
+                generateMaze();
             }
 
             Console.WriteLine("C++ path found in " + total_time + " seconds");
@@ -47,7 +52,7 @@ namespace astar
             // height
             for (int i = 0; i < MAP_HEIGHT; i++)
             {
-                List<int> maze_row = new List<int>();
+                List<int> maze_row = new List<int>(MAP_WIDTH);
                 // width
                 for (int j = 0; j < MAP_WIDTH; j++)
                 {
@@ -63,17 +68,112 @@ namespace astar
             int mapWidth = weightedMap[0].Count;
             int mapHeight = weightedMap.Count;
 
-            List<Position> path = new List<Position>();
+            List<Position> path = new List<Position>((mapWidth + mapHeight) << 2);
             if (start.x < 0 || start.y < 0 || goal.x >= mapWidth || goal.y >= mapHeight ||
                 start == goal || mapWidth < 2 || mapHeight < 2 )
             {
                 return path;
             }
 
+            // create a* variables and preallcoate memory at the same time
+            HashSet<Position> close_set = new HashSet<Position>((mapWidth * mapHeight) >> 2);
+            Dictionary<Position, Position> came_from = new Dictionary<Position, Position>((mapWidth * mapHeight) >> 2);
+            Dictionary<Position, float> gscore = new Dictionary<Position, float>((mapWidth * mapHeight) >> 2);
+            Dictionary<Position, float> fscore = new Dictionary<Position, float>((mapWidth * mapHeight) >> 2);
+            Dictionary<Position, float> oheap_copy = new Dictionary<Position, float>((mapWidth * mapHeight) >> 2);
+            // must allocate absolute max that can be in priority_queue because it will not reallocate if it hits max
+            FastPriorityQueue<Position> oheap = new FastPriorityQueue<Position>(mapWidth * mapHeight + 1);
+
+            Position current;
+            List<Position> neighbors = new List<Position>();
+
+            // add initial position to the search list
+            gscore[start] = 0;
+            fscore[start] = heuristic(start, goal);
+            oheap.Enqueue(start, fscore[start]);
+            oheap_copy.Add(start, fscore[start]);
+
+            while ( oheap.Count > 0 )
+            {
+                // dequeue retrieves and removes
+                current = oheap.Dequeue();
+                oheap_copy.Remove(current);
+
+                if (current.Equals(goal))
+                {
+                    // path found!
+                    Console.WriteLine("Path Found!");
+                    Position new_current;
+                    while (came_from.TryGetValue(current, out new_current))
+                    {
+                        path.Add(new_current);
+                        current = new_current;
+                    }
+
+                    path.Reverse();
+
+                    return path;
+                }
+
+                neighbors = current.GetSurroundingPositions();
+
+                foreach (Position neighbor in neighbors)
+                {
+                    // if the neighbor is a valid position
+                    if (neighbor.x >= 0 && neighbor.y >= 0 &&
+                        neighbor.y < mapHeight && neighbor.x < mapWidth &&
+                        weightedMap[neighbor.y][neighbor.x] < 255)
+                    {
+                        float neighbor_gscore = gscore[current] + (float)weightedMap[neighbor.y][neighbor.x] +
+                                    heuristic(neighbor, current);
+                        float neighbor_fscore = neighbor_gscore + heuristic(neighbor, goal);
+
+                        // if this neighbor is already on the open list with a smaller fscore, skip it
+                        float existing_neighbor_fscore = 0F;
+                        if (oheap_copy.TryGetValue(neighbor, out existing_neighbor_fscore))
+                        {
+                            if (existing_neighbor_fscore <= neighbor_fscore)
+                            {
+                                continue;
+                            }
+                        }
+                        // check if it is on the closed list
+                        else if (close_set.Contains(neighbor))
+                        {
+                            if (fscore[neighbor] <= neighbor_fscore)
+                            {
+                                continue;
+                            }
+                        }
+                        // add to the open list
+                        else
+                        {
+                            // track the node's parent
+                            came_from[neighbor] = current;
+
+                            // gscore = cost to get from the start to the current position
+                            // hscore = estimated cost to get from the current position to the goal (heuristic)
+                            // fscore = gscore + hscore
+                            gscore[neighbor] = neighbor_gscore;
+                            fscore[neighbor] = neighbor_fscore;
+
+                            // Add to the open list
+                            oheap_copy.Add(neighbor, neighbor_fscore);
+                            oheap.Enqueue(neighbor, neighbor_fscore);
+                        }
+
+                    }
+                }
+            }
 
             Console.WriteLine("Fooled You!");
 
             return path;
+        }
+
+        static float heuristic(in Position a, in Position b)
+        {
+            return (float)Math.Abs( (a.x - b.x) + (a.y - b.y) );
         }
     }
 }

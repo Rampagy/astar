@@ -15,5 +15,12 @@ env = Environment(CSC=csc, CSCFLAGS=csc_flags)
 # link the environment and the action/builder
 env.Append(BUILDERS = {'csharp_build' : bld})
 
+
+# gather all files for compiling
+# I should probably make a function that recusively walks the
+# folders beneath src/ looking for *.cs files, but I'm lazy
+compile_files = Glob('src/*.cs')
+compile_files += Glob('src/Priority_Queue/*.cs')
+
 # Build the executable
-env.csharp_build(target_dest, Glob('src/*.cs'))
+env.csharp_build(target_dest, compile_files)

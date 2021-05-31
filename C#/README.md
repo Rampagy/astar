@@ -21,3 +21,7 @@ When running the C# executable ensure that you add executable permissions:
 Then to run the executable:
 
     ./builds/astar_search.exe
+
+## External references
+
+This project uses the high speed priority queue implemntation from this [github repository](https://github.com/BlueRaja/High-Speed-Priority-Queue-for-C-Sharp).
