@@ -1,3 +1,4 @@
+from SCons.Defaults import Chmod
 import SCons.Node.FS
 
 csc = 'csc'
@@ -5,16 +6,18 @@ csc_flags = ['-optimize']
 target_dest = 'builds/astar_search'
 
 # create an action for compiling the code
-bld = Builder(  action = '$CSC $CSCFLAGS -out:${TARGET.abspath} $SOURCES',
-                source_factory=SCons.Node.FS.default_fs.Entry,
-                suffix='.exe')
+csharp_build = Builder( action = '$CSC $CSCFLAGS -out:${TARGET.abspath} $SOURCES',
+                        source_factory=SCons.Node.FS.default_fs.Entry,
+                        suffix='.exe')
+
+# if the platform is linux add executable permissions
+permissions = Builder(action = Chmod('${SOURCE.abspath}', 0o755))
 
 # create an environment for compiling the code
 env = Environment(CSC=csc, CSCFLAGS=csc_flags)
 
 # link the environment and the action/builder
-env.Append(BUILDERS = {'csharp_build' : bld})
-
+env.Append(BUILDERS = {'csharp_build' : csharp_build, 'permissions' : permissions})
 
 # gather all files for compiling
 # I should probably make a function that recusively walks the
@@ -23,4 +26,10 @@ compile_files = Glob('src/*.cs')
 compile_files += Glob('src/Priority_Queue/*.cs')
 
 # Build the executable
-env.csharp_build(target_dest, compile_files)
+csharp_exe = env.csharp_build(target_dest, compile_files)
+
+# Give the executable permissions
+exe_permissions = env.permissions('builds/dummy_dest', target_dest+'.exe')
+
+# Make sure permissions come after building
+env.Requires(exe_permissions, csharp_exe)

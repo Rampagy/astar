@@ -44,7 +44,7 @@ namespace astar
                 generateMaze();
             }
 
-            Console.WriteLine("C++ path found in " + total_time + " seconds");
+            Console.WriteLine("C# path found in " + total_time + " seconds");
         }
 
         private static void generateMaze()
@@ -102,7 +102,6 @@ namespace astar
                 if (current.Equals(goal))
                 {
                     // path found!
-                    Console.WriteLine("Path Found!");
                     Position new_current;
                     while (came_from.TryGetValue(current, out new_current))
                     {
@@ -164,9 +163,10 @@ namespace astar
 
                     }
                 }
-            }
 
-            Console.WriteLine("Fooled You!");
+                // add current position to the already searched list
+                close_set.Add(current);
+            }
 
             return path;
         }

@@ -48,5 +48,10 @@ namespace astar
         {
             return (this.x >= this.y) ? this.x * this.x + this.x + this.y : this.x + this.y * this.y; // szudziks function
         }
+
+        public override string ToString()
+        {
+            return this.x.ToString() + ":" + this.y.ToString();
+        }
     }
 }
