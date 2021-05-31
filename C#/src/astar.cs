@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -27,11 +28,21 @@ namespace astar
             maze[start.y][start.x] = 0;
             maze[goal.y][goal.x] = 0;
 
-            Console.WriteLine(maze.Count);
-            Console.WriteLine(maze[0].Count);
+            for (int i = 0; i < SEARCH_ITERATIONS; i++)
+            {
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
+
+                AStarSearch(maze, start, goal);
+
+                stopwatch.Stop();
+                total_time += stopwatch.Elapsed.TotalSeconds;
+            }
+
+            Console.WriteLine("C++ path found in " + total_time + " seconds");
         }
 
-        static void generateMaze()
+        private static void generateMaze()
         {
             // height
             for (int i = 0; i < MAP_HEIGHT; i++)
@@ -44,6 +55,25 @@ namespace astar
                 }
                 maze.Add(maze_row);
             }
+        }
+
+        private static List<Position> AStarSearch(  in List<List<int>> weightedMap,
+                                                    in Position start, in Position goal)
+        {
+            int mapWidth = weightedMap[0].Count;
+            int mapHeight = weightedMap.Count;
+
+            List<Position> path = new List<Position>();
+            if (start.x < 0 || start.y < 0 || goal.x >= mapWidth || goal.y >= mapHeight ||
+                start == goal || mapWidth < 2 || mapHeight < 2 )
+            {
+                return path;
+            }
+
+
+            Console.WriteLine("Fooled You!");
+
+            return path;
         }
     }
 }
