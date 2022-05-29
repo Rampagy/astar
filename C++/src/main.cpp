@@ -4,8 +4,8 @@ using namespace std;
 
 void generate_maze(vector<vector<int>> &maze)
 {
-    maze.reserve(MAP_HEIGHT);
     #if !defined(TEST_ASTAR)
+    maze.reserve(MAP_HEIGHT);
     // height
     for (int i = 0; i < MAP_HEIGHT; i++)
     {
@@ -14,7 +14,7 @@ void generate_maze(vector<vector<int>> &maze)
         // width
         for (int j = 0; j < MAP_WIDTH; j++)
         {
-            maze_row.push_back(rand() % 255);
+            maze_row.push_back(rand() % MAX_MAP_HEIGHT);
         }
 
         maze.push_back(maze_row);
@@ -37,7 +37,11 @@ int main ()
     vector<vector<int>> maze;
     generate_maze(maze);
 
+    #if defined(TEST_ASTAR)
     Position start = Position(0, 0);
+    #else // !defined(TEST_ASTAR)
+    Position start = Position((maze.front().size()-1) / 2, (maze.size()-1) / 2);
+    #endif
     Position goal = Position(maze.front().size()-1, maze.size()-1);
 
     // make sure start and end are walkable
@@ -75,7 +79,7 @@ int main ()
             #ifdef TEST_ASTAR
             for (Position p : path)
             {
-                cout << p.x << ":" << p.y << " ";
+                cout << p << " ";
             }
             cout << endl << endl;
             #endif

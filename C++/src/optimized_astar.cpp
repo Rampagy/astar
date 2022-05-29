@@ -1,18 +1,20 @@
 #include "optimized_astar.hpp"
-
+#include "main.hpp"
 
 /** References:
  *      https://www.geeksforgeeks.org/a-search-algorithm/
- *
+ *      https://medium.com/@nicholas.w.swift/easy-a-star-pathfinding-7e6689c7f7b2
+ *      http://theory.stanford.edu/~amitp/GameProgramming/ImplementationNotes.html
+ * 
  */
 
 
-float optimized_heuristic(Position a, Position b)
+inline float optimized_heuristic(Position a, Position b)
 {
     return (float)abs( (a.x - b.x) + (a.y - b.y) );
 }
 
-bool greater_comp(const score_T a, const score_T b)
+inline bool greater_comp(const score_T a, const score_T b)
 {
     return a.first > b.first;
 }
@@ -44,26 +46,33 @@ vector<Position> optimized_astar_search(  const vector<vector<int>> &weighted_ma
 
     // Memory preallocation
     oheap.reserve(mapWidth + mapHeight);
-    oheap_copy.reserve((mapWidth * mapHeight) >> 2);
-    close_set.reserve((mapWidth * mapHeight) >> 2);
-    came_from.reserve((mapWidth * mapHeight) >> 2);
-    gscore.reserve((mapWidth * mapHeight) >> 2);
-    fscore.reserve((mapWidth * mapHeight) >> 2);
-    path.reserve((mapWidth + mapHeight) << 2);
+    oheap_copy.reserve(mapWidth * mapHeight);
+    close_set.reserve(mapWidth * mapHeight);
+    came_from.reserve(mapWidth * mapHeight);
+    gscore.reserve(mapWidth * mapHeight);
+    fscore.reserve(mapWidth * mapHeight);
+    path.reserve(mapWidth + mapHeight);
 
     // add initial position to the search list
     gscore[start] = 0;
-    fscore[start] = optimized_heuristic(start, goal);
+    fscore[start] = 0;
     oheap.emplace_back(fscore[start], start);
     push_heap(oheap.begin(), oheap.end(), greater_comp);
     oheap_copy.emplace(start, fscore[start]);
 
+    int count = 0;
     while ( !oheap.empty() )
     {
+        count++;
         pop_heap(oheap.begin(), oheap.end(), greater_comp);
         oheap.pop_back();
         current = oheap.front().second;
         oheap_copy.erase(current);
+        close_set.insert(current);
+
+        #if defined(TEST_ASTAR)
+        cout << current << endl;
+        #endif
 
         if (current == goal)
         {
@@ -73,9 +82,9 @@ vector<Position> optimized_astar_search(  const vector<vector<int>> &weighted_ma
                 path.push_back(current);
                 current = came_from[current];
             }
-
+            
             reverse(path.begin(), path.end());
-
+            cout << "count: " << count << endl;
             return path;
         }
 
@@ -93,25 +102,46 @@ vector<Position> optimized_astar_search(  const vector<vector<int>> &weighted_ma
                                 optimized_heuristic(neighbor, current);
                 float neighbor_fscore = neighbor_gscore + optimized_heuristic(neighbor, goal);
 
-                // if this neighbor is already on the open list with a smaller fscore, skip it
+
+                // if the neighbor is already on the open list check to see if the neighbor is better before updating it
                 open_iter = oheap_copy.find(neighbor);
-                if (open_iter != oheap_copy.end())
+                if (open_iter != oheap_copy.end() && neighbor_gscore < gscore[neighbor])
                 {
-                    if (open_iter->second <= neighbor_fscore)
+                    // track the node's parent
+                    came_from[neighbor] = current;
+
+                    // gscore = cost to get from start to the current position
+                    // hscore = estimated cost to get from the current position to the goal (heuristic)
+                    // fscore = gscore +  hscore
+                    gscore[neighbor] = neighbor_gscore;
+                    fscore[neighbor] = neighbor_fscore;
+
+                    // update the neighbors values
+                    oheap_copy[neighbor] = neighbor_fscore;
+
+                    // remove the old fscore
+                    for (int i = 0; i < oheap.size(); i++)
                     {
-                        continue;
+                        if (oheap[i].second == neighbor)
+                        {
+                            oheap.erase(oheap.begin() + i);
+                            break;
+                        }
                     }
+
+                    // add the new fscore and sort
+                    oheap.emplace_back(neighbor_fscore, neighbor);
+                    make_heap(oheap.begin(), oheap.end(), greater_comp);
                 }
-                // check if it is on the closed list
-                else if (close_set.find(neighbor) != close_set.end())
+
+                if (close_set.find(neighbor) != close_set.end() && neighbor_gscore < gscore[neighbor])
                 {
-                    if (fscore.find(neighbor)->second <= neighbor_fscore)
-                    {
-                        continue;
-                    }
+                    // remove neighbor from closed list
+                    close_set.erase(neighbor);
                 }
-                // Add to the open list
-                else
+                
+                // it's not on the oheap or close set, so add it
+                if (close_set.find(neighbor) == close_set.end() && open_iter == oheap_copy.end()) 
                 {
                     // track the node's parent
                     came_from[neighbor] = current;
@@ -129,9 +159,6 @@ vector<Position> optimized_astar_search(  const vector<vector<int>> &weighted_ma
                 }
             }
         }
-
-        // add current position to the already searched list
-        close_set.insert(current);
     }
 
     return path;
