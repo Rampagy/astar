@@ -45,7 +45,7 @@ vector<Position> optimized_astar_search(  const vector<vector<int>> &weighted_ma
     std::unordered_map<Position, float>::iterator open_iter;
 
     // Memory preallocation
-    oheap.reserve(mapWidth + mapHeight);
+    oheap.reserve(mapWidth * mapHeight);
     oheap_copy.reserve(mapWidth * mapHeight);
     close_set.reserve(mapWidth * mapHeight);
     came_from.reserve(mapWidth * mapHeight);
@@ -132,6 +132,7 @@ vector<Position> optimized_astar_search(  const vector<vector<int>> &weighted_ma
                     // add the new fscore and sort
                     oheap.emplace_back(neighbor_fscore, neighbor);
                     make_heap(oheap.begin(), oheap.end(), greater_comp);
+                    continue;
                 }
 
                 if (close_set.find(neighbor) != close_set.end() && neighbor_gscore < gscore[neighbor])
