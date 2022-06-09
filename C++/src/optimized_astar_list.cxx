@@ -36,7 +36,7 @@ vector<Position> optimized_astar_search(  const vector<vector<int>> &weighted_ma
     unordered_map<Position, Position> came_from;
     unordered_map<Position, float> gscore;
     unordered_map<Position, float> fscore;
-    vector<score_T> oheap;
+    list<score_T> oheap;
     unordered_map<Position, float> oheap_copy;
 
     Position current;
@@ -45,7 +45,7 @@ vector<Position> optimized_astar_search(  const vector<vector<int>> &weighted_ma
     std::unordered_map<Position, float>::iterator open_iter;
 
     // Memory preallocation
-    oheap.reserve(mapWidth * mapHeight);
+    //oheap.reserve(mapWidth * mapHeight);
     oheap_copy.reserve(mapWidth * mapHeight);
     close_set.reserve(mapWidth * mapHeight);
     came_from.reserve(mapWidth * mapHeight);
@@ -56,8 +56,8 @@ vector<Position> optimized_astar_search(  const vector<vector<int>> &weighted_ma
     // add initial position to the search list
     gscore[start] = 0;
     fscore[start] = 0;
-    oheap.emplace_back(fscore[start], start);
-    push_heap(oheap.begin(), oheap.end(), greater_comp);
+    oheap.emplace_front(fscore[start], start);
+    //push_heap(oheap.begin(), oheap.end(), greater_comp);
     oheap_copy.emplace(start, fscore[start]);
 
     int count = 0;
@@ -65,8 +65,8 @@ vector<Position> optimized_astar_search(  const vector<vector<int>> &weighted_ma
     {
         count++;
         current = oheap.front().second;
-        pop_heap(oheap.begin(), oheap.end(), greater_comp);
-        oheap.pop_back();
+        //pop_heap(oheap.begin(), oheap.end(), greater_comp);
+        oheap.pop_front();
         oheap_copy.erase(current);
         close_set.insert(current);
 
@@ -120,18 +120,32 @@ vector<Position> optimized_astar_search(  const vector<vector<int>> &weighted_ma
                     oheap_copy[neighbor] = neighbor_fscore;
 
                     // remove the old fscore
-                    for (int i = 0; i < oheap.size(); i++)
+                    for (list<score_T>::iterator it = oheap.begin(); it != oheap.end(); it++)
                     {
-                        if (oheap[i].second == neighbor)
+                        if (it->second == neighbor)
                         {
-                            oheap.erase(oheap.begin() + i);
+                            oheap.erase(it);
                             break;
                         }
                     }
 
-                    // add the new fscore and sort
-                    oheap.emplace_back(neighbor_fscore, neighbor);
-                    make_heap(oheap.begin(), oheap.end(), greater_comp);
+                    // add the new fscore
+                    bool inserted = false;
+                    for (list<score_T>::iterator it = oheap.begin(); it != oheap.end(); it++)
+                    {
+                        if (neighbor_fscore < it->first)
+                        {
+                            oheap.emplace(it, neighbor_fscore, neighbor);
+                            inserted = true;
+                            break;
+                        }
+                    }
+
+                    if (!inserted)
+                    {
+                        // if it hasn't been inserted that means it needs to be inserted at the end
+                        oheap.emplace_back(neighbor_fscore, neighbor);
+                    }
                     continue;
                 }
 
@@ -155,8 +169,24 @@ vector<Position> optimized_astar_search(  const vector<vector<int>> &weighted_ma
 
                     // Add to the open list
                     oheap_copy.emplace(neighbor, neighbor_fscore);
-                    oheap.emplace_back(neighbor_fscore, neighbor);
-                    push_heap(oheap.begin(), oheap.end(), greater_comp);
+
+                    // add the new fscore
+                    bool inserted = false;
+                    for (list<score_T>::iterator it = oheap.begin(); it != oheap.end(); it++)
+                    {
+                        if (neighbor_fscore < it->first)
+                        {
+                            oheap.emplace(it, neighbor_fscore, neighbor);
+                            inserted = true;
+                            break;
+                        }
+                    }
+
+                    if (!inserted)
+                    {
+                        // if it hasn't been inserted that means it needs to be inserted at the end
+                        oheap.emplace_back(neighbor_fscore, neighbor);
+                    }
                 }
             }
         }

@@ -21,3 +21,10 @@ When running the C++ executable ensure that you add executable permissions:
 Then to run the executable:
 
     ./builds/astar_search_Linux
+
+## Performance
+
+| Data Structure  |  Time (seconds) |
+|-----------------|-----------------|
+| Vector          | 21.24           |
+| List            | 21.5            |
